@@ -1,94 +1,108 @@
-const rockBtn = document.querySelector(".rock");
-const paperBtn = document.querySelector(".paper");
-const scissorsBtn = document.querySelector(".scissors");
-const roundWinnerDisplay = document.querySelector(".roundWinnerDisplay");
-const playerChoseDisplay = document.querySelector(".playerChose");
-const computerChoseDisplay = document.querySelector(".computerChose");
-
 let playerScore = 0;
 let computerScore = 0;
 
-playerInput();
+const rockBtn = document.querySelector(".rock");
+const paperBtn = document.querySelector(".paper");
+const scissorsBtn = document.querySelector(".scissors");
 
-function playerInput() {
-  let playerChoice;
+rockBtn.addEventListener("click", () => {
+  const playerChoice = "Rock 🪨";
+  playRound(playerChoice);
+});
 
-  rockBtn.addEventListener("click", () => {
-    playerChoice = "Rock";
-    playerChoseDisplay.textContent = "Player Choice: Rock";
-    computerInput(playerChoice);
-  });
-  paperBtn.addEventListener("click", () => {
-    playerChoice = "Paper";
-    playerChoseDisplay.textContent = "Player Choice: Paper";
-    computerInput(playerChoice);
-  });
-  scissorsBtn.addEventListener("click", () => {
-    playerChoice = "Scissors";
-    playerChoseDisplay.textContent = "Player Choice: Scissors";
-    computerInput(playerChoice);
-  });
-}
+paperBtn.addEventListener("click", () => {
+  const playerChoice = "Paper 📄";
+  playRound(playerChoice);
+});
 
-function computerInput(playerChoice) {
-  const choices = ["Rock", "Paper", "Scissors"];
-  let computerChoice = choices[Math.floor(Math.random() * choices.length)];
+scissorsBtn.addEventListener("click", () => {
+  const playerChoice = "Scissors ✂";
+  playRound(playerChoice);
+});
 
-  computerChoseDisplay.textContent = "Computer Choice: " + computerChoice;
-  playRound(playerChoice, computerChoice);
-}
+function playRound(playerChoice) {
+  const computerChoice = computerInput();
+  const playerChoiceDisplay = document.querySelector(".playerChoiceDisplay");
+  const computerChoiceDisplay = document.querySelector(
+    ".computerChoiceDisplay"
+  );
 
-function playRound(playerChoice, computerChoice) {
   let playerWonRound;
-  let computerWonRound;
+  let computerWondRound;
+
+  playerChoiceDisplay.textContent = "Player Chose: " + playerChoice;
+  computerChoiceDisplay.textContent = "Computer Chose: " + computerChoice;
 
   if (playerChoice === computerChoice) {
-    roundWinnerDisplay.textContent = "This round is a tie!";
     playerWonRound = false;
-    computerWonRound = false;
-    scoreKeeper(playerWonRound, computerWonRound);
+    computerWondRound = false;
+    scoreKeeper(playerWonRound, computerWondRound);
   } else if (
-    (playerChoice === "Rock" && computerChoice === "Scissors") ||
-    (playerChoice === "Paper" && computerChoice === "Rock") ||
-    (playerChoice === "Scissors" && computerChoice === "Paper")
+    (playerChoice === "Rock 🪨" && computerChoice === "Scissors ✂") ||
+    (playerChoice === "Paper 📄" && computerChoice === "Rock 🪨") ||
+    (playerChoice === "Scissors ✂" && computerChoice === "Paper 📄")
   ) {
-    roundWinnerDisplay.textContent = "You win this round!";
     playerWonRound = true;
-    computerWonRound = false;
-    scoreKeeper(playerWonRound, computerWonRound);
+    computerWondRound = false;
+    scoreKeeper(playerWonRound, computerWondRound);
   } else {
-    roundWinnerDisplay.textContent = "You loose this round!";
     playerWonRound = false;
-    computerWonRound = true;
-    scoreKeeper(playerWonRound, computerWonRound);
+    computerWondRound = true;
+    scoreKeeper(playerWonRound, computerWondRound);
   }
 }
 
-function scoreKeeper(playerWonRound, computerWonRound) {
-  const playerScoreDisplay = document.querySelector(".playerScore");
-  const computerScoreDisplay = document.querySelector(".computerScore");
+function computerInput() {
+  const choices = ["Rock 🪨", "Paper 📄", "Scissors ✂"];
+  return choices[Math.floor(Math.random() * choices.length)];
+}
+
+function scoreKeeper(playerWonRound, computerWondRound) {
+  const playerScoreDisplay = document.querySelector(".playerScoreDisplay");
+  const computerScoreDisplay = document.querySelector(".computerScoreDisplay");
+  const roundWinnerDisplay = document.querySelector(".roundWinnerDisplay");
+
+  let playerWonGame;
 
   if (playerWonRound === true) {
     playerScore++;
     playerScoreDisplay.textContent = "Player Score: " + playerScore;
-  } else if (computerWonRound === true) {
+    roundWinnerDisplay.textContent = "You win this round!";
+  } else if (computerWondRound === true) {
     computerScore++;
     computerScoreDisplay.textContent = "Computer Score: " + computerScore;
+    roundWinnerDisplay.textContent = "You lost this round!";
+  } else {
+    roundWinnerDisplay.textContent = "This round is a tie!";
   }
 
   if (playerScore === 5) {
-    rockBtn.remove();
-    paperBtn.remove();
-    scissorsBtn.remove();
-    playerChoseDisplay.remove();
-    computerChoseDisplay.remove();
-    roundWinnerDisplay.textContent = "You win the game!";
+    playerWonGame = true;
+    gameOver(roundWinnerDisplay, playerWonGame);
   } else if (computerScore === 5) {
-    rockBtn.remove();
-    paperBtn.remove();
-    scissorsBtn.remove();
-    playerChoseDisplay.remove();
-    computerChoseDisplay.remove();
-    roundWinnerDisplay.textContent = "You loose the game!";
+    playerWonGame = false;
+    gameOver(roundWinnerDisplay, playerWonGame);
   }
+}
+
+function gameOver(roundWinnerDisplay, playerWonGame) {
+  const buttons = document.querySelector("#buttons");
+  const playAgainBtn = document.createElement("button");
+
+  if (playerWonGame === true) {
+    roundWinnerDisplay.textContent = "You win the game!";
+  } else {
+    roundWinnerDisplay.textContent = "You lost the game!";
+  }
+
+  rockBtn.remove();
+  paperBtn.remove();
+  scissorsBtn.remove();
+
+  buttons.appendChild(playAgainBtn);
+  playAgainBtn.textContent = "Play Again?";
+
+  playAgainBtn.addEventListener("click", () => {
+    location.reload();
+  });
 }
