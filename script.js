@@ -1,67 +1,94 @@
+const rockBtn = document.querySelector(".rock");
+const paperBtn = document.querySelector(".paper");
+const scissorsBtn = document.querySelector(".scissors");
+const roundWinnerDisplay = document.querySelector(".roundWinnerDisplay");
+const playerChoseDisplay = document.querySelector(".playerChose");
+const computerChoseDisplay = document.querySelector(".computerChose");
+
 let playerScore = 0;
 let computerScore = 0;
 
-game();
+playerInput();
 
-function game() {
-  for (let i = 0; i < 5; i++) {
-    const playerSelection = playerInput();
-    const computerSelection = computerInput();
-    console.log(playRound(computerSelection, playerSelection));
-    console.log("- - - - - - - - - - - - - - - - - - - - - -");
-  }
+function playerInput() {
+  let playerChoice;
+
+  rockBtn.addEventListener("click", () => {
+    playerChoice = "Rock";
+    playerChoseDisplay.textContent = "Player Choice: Rock";
+    computerInput(playerChoice);
+  });
+  paperBtn.addEventListener("click", () => {
+    playerChoice = "Paper";
+    playerChoseDisplay.textContent = "Player Choice: Paper";
+    computerInput(playerChoice);
+  });
+  scissorsBtn.addEventListener("click", () => {
+    playerChoice = "Scissors";
+    playerChoseDisplay.textContent = "Player Choice: Scissors";
+    computerInput(playerChoice);
+  });
 }
 
-function playRound(computerSelection, playerSelection) {
+function computerInput(playerChoice) {
+  const choices = ["Rock", "Paper", "Scissors"];
+  let computerChoice = choices[Math.floor(Math.random() * choices.length)];
+
+  computerChoseDisplay.textContent = "Computer Choice: " + computerChoice;
+  playRound(playerChoice, computerChoice);
+}
+
+function playRound(playerChoice, computerChoice) {
   let playerWonRound;
   let computerWonRound;
 
-  if (computerSelection === playerSelection) {
+  if (playerChoice === computerChoice) {
+    roundWinnerDisplay.textContent = "This round is a tie!";
     playerWonRound = false;
     computerWonRound = false;
     scoreKeeper(playerWonRound, computerWonRound);
-    return "this round is a tie!";
   } else if (
-    (computerSelection === "rock" && playerSelection === "paper") ||
-    (computerSelection === "paper" && playerSelection === "scissors") ||
-    (computerSelection === "scissors" && playerSelection === "rock")
+    (playerChoice === "Rock" && computerChoice === "Scissors") ||
+    (playerChoice === "Paper" && computerChoice === "Rock") ||
+    (playerChoice === "Scissors" && computerChoice === "Paper")
   ) {
+    roundWinnerDisplay.textContent = "You win this round!";
     playerWonRound = true;
     computerWonRound = false;
     scoreKeeper(playerWonRound, computerWonRound);
-    return "you win this round!";
   } else {
+    roundWinnerDisplay.textContent = "You loose this round!";
     playerWonRound = false;
     computerWonRound = true;
     scoreKeeper(playerWonRound, computerWonRound);
-    return "you loose this round!";
   }
 }
 
-function computerInput() {
-  const choices = ["rock", "paper", "scissors"];
-  const cpu = choices[Math.floor(Math.random() * choices.length)];
-  console.log("CPU chose: " + cpu);
-  return cpu;
-}
-
-function playerInput() {
-  const player = prompt("Type, rock, paper, or scissors.").toLowerCase();
-  console.log("Player chose: " + player);
-  return player;
-}
-
 function scoreKeeper(playerWonRound, computerWonRound) {
+  const playerScoreDisplay = document.querySelector(".playerScore");
+  const computerScoreDisplay = document.querySelector(".computerScore");
+
   if (playerWonRound === true) {
     playerScore++;
-    console.log("Player Score = " + playerScore);
-    console.log("CPU Score = " + computerScore);
+    playerScoreDisplay.textContent = "Player Score: " + playerScore;
   } else if (computerWonRound === true) {
     computerScore++;
-    console.log("Player Score = " + playerScore);
-    console.log("CPU Score = " + computerScore);
-  } else {
-    console.log("Player Score = " + playerScore);
-    console.log("CPU Score = " + computerScore);
+    computerScoreDisplay.textContent = "Computer Score: " + computerScore;
+  }
+
+  if (playerScore === 5) {
+    rockBtn.remove();
+    paperBtn.remove();
+    scissorsBtn.remove();
+    playerChoseDisplay.remove();
+    computerChoseDisplay.remove();
+    roundWinnerDisplay.textContent = "You win the game!";
+  } else if (computerScore === 5) {
+    rockBtn.remove();
+    paperBtn.remove();
+    scissorsBtn.remove();
+    playerChoseDisplay.remove();
+    computerChoseDisplay.remove();
+    roundWinnerDisplay.textContent = "You loose the game!";
   }
 }
